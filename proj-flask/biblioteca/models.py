@@ -2,7 +2,6 @@ import datetime
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship, scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy_imageattach.entity import Image, image_attachment
 
 
 engine = create_engine('sqlite:///biblioteca.db')
@@ -18,25 +17,11 @@ class Obras(Base):
     titulo = Column(String(200), index=True)
     editora = Column(String(150))
     autor = Column(String(200))
-    picture = image_attachment('ObrasFotos')
+    foto = Column(String(250))
     criado_em = Column(DateTime, default=datetime.datetime.utcnow)
 
     def __repr__(self) -> str:
         return '<Obras {titulo}>'.format(titulo=self.titulo)
-
-    def save(self):
-        db_session.add(self)
-        db_session.commit()
-
-    def delete(self):
-        db_session.delete(self)
-        db_session.commit()
-
-
-class ObrasFotos(Base, Image):
-    __tablename__ = 'obras_fotos'
-    obras_id = Column(Integer, ForeignKey('obras.id'), primary_key=True)
-    obras = relationship('Obras')
 
     def save(self):
         db_session.add(self)
